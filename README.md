@@ -10,10 +10,13 @@ Table of contents
    * [Specs](#specs)
      * [Card](#card)
      * [Hand](#hand)
+   * [Features](#features)
    * [Requirements](#requirements)
    * [Libraries](#libraries)
    * [Running the application locally](#running-the-application-locally)
-   * [Tests](#tests)                  
+   * [Tests](#tests)    
+      * [Card Test](#card-test)
+      * [Hand Test](#hand-test)              
 <!--te-->
 
 ## Specs
@@ -26,19 +29,38 @@ Table of contents
 
 ### Card
 
-•	Every card has a suit (except the Joker), which can be clubs, diamonds, hearts and spades.
-•	A card can be either a card with a number on it between 2 and 10, I'll call this a value card, or it can be one of the face cards: Jack, Queen, King or Ace.
-•	There is a special card, the Joker, which does not have a suit.
-•	Face cards have value of 20.
-•	Joker has a value of 0.
+-	Every card has a suit (except the Joker), which can be clubs, diamonds, hearts and spades.
+
+-	A card can be either a card with a number on it between 2 and 10, I'll call this a value card, or it can be one of the face cards: Jack, Queen, King or Ace.
+
+-	There is a special card, the Joker, which does not have a suit.
+
+-	Face cards have value of 20.
+
+-	Joker has a value of 0.
 
 ### Hand
 
-•	Should allow a card to be added to the hand.
-•	Should allow a maximum of 5 cards to be added to a hand.
-•	Should be able to calculate the total amount of cards in the hand.
-•	Should be able to calculate the total value of cards in the hand.
-•	Should allow the hand to be reset.
+-	Should allow a card to be added to the hand.
+
+-	Should allow a maximum of 5 cards to be added to a hand.
+
+-	Should be able to calculate the total amount of cards in the hand.
+
+-	Should be able to calculate the total value of cards in the hand.
+
+-	Should allow the hand to be reset.
+
+## Features
+### The application uses a number of defensive coding and monitoring techniques for resilience
+
+- Logging events for production readiness, this allows proper monitoring and alerting capabilities.
+- Exception messages, which are unit tested.
+- Preventing different types of card initialised using different expected values. For example, the application prevents
+creating a special card using a face or value card properties.
+- Asserting nulls checks.
+- Create a new ArrayList of cards when constructing a hand with a list of cards to assert the List type. 
+- Return unmodifiable lists when requesting list of cards from hand.
 
   
 ## Requirements
@@ -67,4 +89,26 @@ There are several ways to run a Java on your local machine.
  
  ## Tests
  There are several tests included that tests functional requirements and edge cases.  
+ 
+ ### Card Test
+ #### Core functionality tests covering
+ - Create a Card and can create a Special Card
+ - Assert that a Special card does not have a Suit
+ - Face cards have a value of 20
+ - Special Card has a value of Zero
+ - Cannot create a card (or a special card) using a null rank nor a null suit.
+ - Assert the right values (Ranks) are returned according to the card type.
+ 
+  ### Hand Test
+  #### Core functionality tests covering
+  - Create an empty Hand and that hand is empty
+  - Create a Hand with 5 Cards and only up to 5 cards.
+  - Cannot create a hand with a Null
+  - Can add a card to hand
+  - Cannot add a null card to hand
+  - Full hand (with 5 cards) cannot accept more cards
+  - Can get the number of cards in a hand
+  - When empty hand, can get the zero number of cards
+  - Can calculate the total value of cards in a hand, regardless of cards' type
+  - Can reset a hand
  
