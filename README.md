@@ -16,7 +16,8 @@ Table of contents
    * [Running the application locally](#running-the-application-locally)
    * [Tests](#tests)    
       * [Card Test](#card-test)
-      * [Hand Test](#hand-test)              
+      * [Hand Test](#hand-test)     
+   * [Improvement](#improvement)         
 <!--te-->
 
 ## Specs
@@ -112,3 +113,68 @@ There are several ways to run a Java on your local machine.
   - Can calculate the total value of cards in a hand, regardless of cards' type
   - Can reset a hand
  
+  ## Improvement
+  One area of improvement is using an interface/abstract classes to allow further extensibility and separation of concerns.
+  This depends on the type of application the model will be merged into. 
+  
+  For example, in case of merging this into a microservice, using Spring Boot something similar may provide better 
+  separation of concerns, testability and resilience:
+  
+  ```java
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(
+        name = "CARD_TYPE",
+        discriminatorType = DiscriminatorType.STRING)
+public abstract class Card {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    private Rank rank;
+
+    public Card() {
+    }
+
+    public Card(Rank rank) {
+        this.rank = rank;
+    }
+}
+  ```
+
+Then this can be extended by Card type, like so: 
+
+  ```java
+@Entity
+@DiscriminatorValue(value = "FACE_CARD")
+public class FaceCard extends Card {
+
+    @Enumerated(value = EnumType.STRING)
+    private Suit suit;
+
+    public FaceCard() {
+    }
+
+    public FaceCard(Rank rank, Suit suit) {
+        super(rank);
+        this.suit = suit;
+    }
+}
+  ```
+
+In terms of Repository to commit into a database, like so would work for our Superclass of Card:
+
+  ```java
+@NoRepositoryBean
+public interface CardRepository extends CrudRepository<Card, Long> {
+}
+  ```
+
+For subclasses, such as Face Card or Special Card: 
+
+  ```java
+@Repository
+public interface FaceCardRepository extends CardRepository {
+}
+  ```
